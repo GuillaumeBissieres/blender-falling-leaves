@@ -1,0 +1,14 @@
+schema_version = "1.0.0"
+id = "falling_leaves"
+version = "1.4.0"
+name = "Falling Leaves"
+tagline = "Create and animate realistic falling leaves with one click"
+maintainer = "Guillaume Bissieres"
+type = "add-on"
+website = "https://bissieres.gumroad.com/l/FallingLeaves"
+tracker_url = ""
+tags = ["Animation", "Object"]
+blender_version_min = "4.2.0"
+license = [
+"SPDX:GPL-3.0-or-later",
+]
