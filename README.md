@@ -26,6 +26,7 @@ Adjust the path to match your Blender version.
 
 The asset pack is hosted here: [GBissieres/falling_leaves_assets](https://huggingface.co/datasets/GBissieres/falling_leaves_assets)
 
+<img width="647" height="365" alt="Capture d&#39;écran 2026-10-28 211633" src="https://github.com/user-attachments/assets/0aff4ee0-7d54-4293-a988-22ab17c3b1a6" />
 
 ###
 
