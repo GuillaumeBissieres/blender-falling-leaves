@@ -100,7 +100,7 @@ If the pack is not installed yet, the panel shows a **Download Asset Pack** butt
 
 ###
 
-
+<img width="1894" height="998" alt="falling_leaves_10 (2)" src="https://github.com/user-attachments/assets/e15339c4-2b88-4fbe-b8ae-8b8d0e66b364" />
 
 
 ###
