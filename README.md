@@ -1,64 +1,138 @@
 # blender-falling-leaves
-Create and animate realistic falling leaves
-Falling Leaves
 An add-on to create and animate realistic falling leaves in Blender
 
-Falling Leaves — Particle System + Wind
+<img width="4167" height="2083" alt="Falling_img_01" src="https://github.com/user-attachments/assets/a8edc86e-fd5a-48e2-a229-2d541f34272f" />
 
-This add-on builds a complete falling-leaves scene in one click: an emitter, a leaf mesh, a ground with collision and a fully configured particle system. You can then tune the simulation, swap in your own leaf, add wind and bake the result — all from Blender's N panel.
+<!-- Add a banner screenshot here: drag & drop an image into the GitHub editor -->
 
-How to Use — Quick Start
+#
 
-1. Run Falling Leaves
-Creates an Emitter plane above the scene, a Leaf object, a Ground plane with Collision and a particle system (500 leaves by default) with Newtonian physics, Brownian motion, drag, damping and random rotation. Press play and the leaves fall.
+**Falling Leaves**
 
-2. Delete Setup
-The trash icon next to the Run button removes the Emitter, Leaf and Ground objects in one click.
+This add-on builds a complete falling-leaves scene in one click: an emitter, a leaf mesh, a ground with collision and a fully configured particle system. You can then tune the simulation, swap in your own leaf, add wind and bake the result — all from within Blender's N panel.
 
-How to Use — Leaf Mesh
 
-Import Leaf from Image
-Select a PNG or JPG with transparency. The add-on reads the alpha channel to extract the leaf silhouette, then builds a leaf mesh with UV mapping and a material. Adjust Subdivisions and Displacement for a more organic shape.
+# Requirements
 
-Replace Leaf Mesh
-Select any object in the scene and click this button to use it as the instanced leaf of the particle system.
+- **Blender 4.2 or newer**
+- **Asset pack** (about 127 MB): the ready-made leaf objects are hosted on Hugging Face and downloaded from the add-on preferences — no terminal needed. An internet connection is required for this one-time download.
+- **OpenCV** (`opencv-python-headless`): required only for **Import Leaf from Image**. Install it into Blender's Python, for example on Windows:
 
-How to Use — Asset Panel
+```
+"C:\Program Files\Blender Foundation\Blender 5.0\5.0\python\bin\python.exe" -m pip install opencv-python-headless
+```
 
-Click an icon in the grid to append the matching ready-made leaf object into your scene. Import Asset opens Blender's append browser on the asset pack, so you can pick any object from it.
+Adjust the path to match your Blender version.
 
-How to Use — Simulation Settings
+The asset pack is hosted here: [GBissieres/falling_leaves_assets](https://huggingface.co/datasets/GBissieres/falling_leaves_assets)
+
+
+###
+
+<!-- Screenshot: add-on preferences with the Download Asset Pack button -->
+
+# Installation
+
+Download the ZIP file.
+
+Open Blender and go to **Edit** > **Preferences** > **Get Extensions**.
+
+Click the arrow in the top-right corner, choose **Install from Disk**, and select the ZIP file.
+
+Enable the add-on by checking the corresponding box.
+
+Go to **Edit** > **Preferences** > **System** > **Network** and enable **Allow Online Access**.
+
+Go to **Edit** > **Preferences** > **Add-ons** > **Falling Leaves** and click **Download Asset Pack**. A progress counter shows the download status and Blender stays responsive.
+
+Access **Falling Leaves** in the **N menu** (sidebar) under the **Falling Leaves tab**.
+
+If you use a full version that already includes the asset pack, the download step is not needed.
+
+
+# How to Use — Quick Start
+
+1. **Run Falling Leaves** : Creates an Emitter plane above the scene, a Leaf object, a Ground plane with Collision and a particle system (500 leaves by default) with Newtonian physics, Brownian motion, drag, damping and random rotation. Press play and the leaves fall.
+
+<!-- Screenshot: the scene right after clicking Run Falling Leaves -->
+
+2. **Delete Setup** : The trash icon next to the Run button removes the Emitter, Leaf and Ground objects in one click.
+
+###
+
+<!-- Screenshot: the main panel with the Run button and trash icon -->
+
+###
+
+
+# How to Use — Leaf Mesh
+
+1. **Import Leaf from Image** : Select a PNG or JPG with transparency. The add-on reads the alpha channel to extract the leaf silhouette, then builds a leaf mesh with UV mapping and a material. Adjust **Subdivisions** and **Displacement** in the Adjust Last Operation panel for a more organic shape.
+
+2. **Replace Leaf Mesh** : Select any object in the scene and click this button to use it as the instanced leaf of the particle system. The current leaf object is displayed in the panel.
+
+###
+
+<!-- Screenshot: Leaf Mesh panel -->
+
+###
+
+
+# How to Use — Asset Panel
+
+Click an icon in the grid to append the matching ready-made leaf object into your scene. **Import Asset** opens Blender's append browser on the asset pack, so you can pick any object from it.
+
+If the pack is not installed yet, the panel shows a **Download Asset Pack** button.
+
+###
+
+<!-- Screenshot: Asset Panel icon grid -->
+
+###
+
+
+# How to Use — Simulation Settings
 
 Fine-tune the particle system without leaving the N panel:
-- Particles: leaf count, lifetime, start and end frame
-- Size: leaf size and size randomness
-- Physics: mass, Brownian motion, drag, damping
-- Rotation: randomness and angular velocity
 
-Export to Clipboard copies all particle and wind settings as text, Apply from Clipboard pastes them back (handy to share a look between scenes), and Reset restores the defaults.
+- **Particles** : Leaf Count, Lifetime, Start Frame, End Frame
+- **Size** : leaf size and size randomness
+- **Physics** : Mass, Brownian, Drag, Damping
+- **Rotation** : Randomize and Angular Velocity
 
-How to Use — Wind & Forces
+### Settings Export
 
-Add Wind
-Adds a Wind force field with a ready-made preset and adjusts the particle settings to match, so leaves drift naturally.
+- **Export to Clipboard** : Copies all particle and wind settings as text.
+- **Apply from Clipboard** : Pastes them back — handy to reuse a look in another scene.
+- **Reset** : Restores the default values.
 
-Strength / Noise
-Two sliders control the wind directly from the panel.
+###
 
-Delete Wind (trash icon)
-Removes the wind field in one click.
+<!-- Screenshot: Simulation Settings panel -->
 
-Bake Simulation
-Bakes the particle simulation for reliable playback and rendering.
+###
 
-Advanced Options
 
-- On-demand asset pack: the leaf asset pack (about 127 MB) is not bundled in the extension. Download it once from the add-on preferences with the Download Asset Pack button.
-- Online access only on click: the add-on connects to the internet only when you press the download button, and only if Allow Online Access is enabled in Blender's preferences.
-- Survives updates: the pack is stored in the extension's user folder, so updating the add-on does not remove it.
-- Non-destructive: Delete Setup and Delete Wind only remove the objects created by the add-on.
+# How to Use — Wind & Forces
 
-Requirements
+1. **Add Wind** : Adds a Wind force field with a ready-made preset and adjusts the particle settings to match, so leaves drift naturally.
+2. **Strength / Noise** : Two sliders control the wind directly from the panel.
+3. **Delete Wind** : The trash icon next to Add Wind removes the wind field in one click.
+4. **Bake Simulation** : Bakes the particle simulation for reliable playback and rendering.
 
-- Blender 4.2 or newer.
-- Import Leaf from Image requires OpenCV (opencv-python-headless).
+###
+
+<!-- Screenshot: Wind & Forces panel -->
+
+###
+
+
+# Advanced Options
+
+- **On-demand Asset Pack** : The heavy `.blend` and textures are not bundled in the add-on, which keeps the install small. Download them once from the preferences.
+- **Online Access Only on Click** : The add-on connects to the internet only when you press the download button, and only if **Allow Online Access** is enabled in Blender.
+- **Survives Updates** : The asset pack is stored in the extension's user folder, so updating the add-on does not remove it.
+- **Background Download** : The pack downloads in a separate thread with a progress counter — Blender never freezes.
+- **Safe Download** : Files are written to a temporary `.part` file and size-checked before being validated, so an interrupted download never leaves a corrupted pack.
+- **Copy & Share Settings** : Particle and wind settings can be exported to the clipboard and applied in another scene.
+- **Non-destructive Cleanup** : Delete Setup and Delete Wind only remove the objects created by the add-on.
