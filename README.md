@@ -94,7 +94,14 @@ If the pack is not installed yet, the panel shows a **Download Asset Pack** butt
 
 ###
 
+<img width="432" height="275" alt="Capture d&#39;écran 2026-10-28 231211" src="https://github.com/user-attachments/assets/5413b8e4-2567-4e19-936c-8809d583cd99" />
+
 <!-- Screenshot: Asset Panel icon grid -->
+
+###
+
+
+
 
 ###
 
