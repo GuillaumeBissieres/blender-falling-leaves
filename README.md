@@ -61,6 +61,13 @@ If you use a full version that already includes the asset pack, the download ste
 
 ###
 
+<img width="340" height="211" alt="Capture d&#39;écran 2026-10-28 230946" src="https://github.com/user-attachments/assets/8ac4e2fd-fa7b-4926-91a9-7a1577f884ba" />
+
+###
+
+<img width="1894" height="998" alt="falling_leaves_6" src="https://github.com/user-attachments/assets/bb0e2ec3-bca6-4fc1-864a-4b63a72db0e0" />
+
+
 <!-- Screenshot: the main panel with the Run button and trash icon -->
 
 ###
