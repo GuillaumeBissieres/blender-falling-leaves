@@ -1,14 +1,23 @@
 schema_version = "1.0.0"
 id = "falling_leaves"
-version = "1.4.0"
+version = "1.5.0"
 name = "Falling Leaves"
 tagline = "Create and animate realistic falling leaves with one click"
 maintainer = "Guillaume Bissieres"
 type = "add-on"
 website = "https://bissieres.gumroad.com/l/FallingLeaves"
-tracker_url = ""
+tracker_url = "https://github.com/GuillaumeBissieres/blender-falling-leaves/issues"
 tags = ["Animation", "Object"]
 blender_version_min = "4.2.0"
 license = [
-"SPDX:GPL-3.0-or-later",
+  "SPDX:GPL-3.0-or-later",
+]
+
+[permissions]
+network = "Download asset pack from Hugging Face"
+
+[build]
+paths_exclude_pattern = [
+  "/assets/asset_1.blend",
+  "/assets/feuille*.png",
 ]
