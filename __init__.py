@@ -14,6 +14,8 @@
 import bpy
 import bpy.utils.previews
 import os
+import threading
+import urllib.request
 from bpy_extras.io_utils import ImportHelper
 from bpy.props import (StringProperty, IntProperty, FloatProperty,
                        BoolProperty, EnumProperty)
@@ -25,6 +27,70 @@ _icons = None
 _ASSETS = os.path.join(os.path.dirname(__file__), 'assets')
 _ICONS  = os.path.join(_ASSETS, 'icons')
 _MENU   = os.path.join(_ICONS, 'Menu_icons')
+
+# ---------------------------------------------------------------------------
+# Downloadable asset pack (Hugging Face)
+# ---------------------------------------------------------------------------
+_HF_BASE = ('https://huggingface.co/datasets/GBissieres/'
+            'falling_leaves_assets/resolve/main/assets/')
+_DOWNLOAD_FILES = ['asset_1.blend', 'feuille.png', 'feuilles_3.png',
+                   'feuilles_5.png', 'feuilles_7.png', 'feuilles_8.png']
+_dl = {'running': False, 'error': None, 'current': '', 'done': 0, 'total': 0}
+
+
+def _user_assets_dir(create=False):
+    """Persistent folder (survives addon updates) for the downloaded pack."""
+    try:
+        return bpy.utils.extension_path_user(__package__, path='assets', create=create)
+    except Exception:
+        return None
+
+
+def _asset_path(name):
+    """Downloaded copy first, then the copy bundled in the zip (full version)."""
+    d = _user_assets_dir()
+    if d:
+        p = os.path.join(d, name)
+        if os.path.exists(p):
+            return p
+    p = os.path.join(_ASSETS, name)
+    return p if os.path.exists(p) else None
+
+
+def _download_worker(dest_dir):
+    tmp = None
+    try:
+        os.makedirs(dest_dir, exist_ok=True)
+        for name in _DOWNLOAD_FILES:
+            target = os.path.join(dest_dir, name)
+            if os.path.exists(target):
+                continue
+            tmp = target + '.part'
+            _dl.update(current=name, done=0, total=0)
+            req = urllib.request.Request(_HF_BASE + name,
+                                         headers={'User-Agent': 'FallingLeaves-Blender'})
+            with urllib.request.urlopen(req, timeout=30) as r, open(tmp, 'wb') as f:
+                _dl['total'] = int(r.headers.get('Content-Length') or 0)
+                while True:
+                    chunk = r.read(1 << 20)
+                    if not chunk:
+                        break
+                    f.write(chunk)
+                    _dl['done'] += len(chunk)
+            if _dl['total'] and os.path.getsize(tmp) != _dl['total']:
+                raise IOError(f'Incomplete download: {name}')
+            os.replace(tmp, target)
+            tmp = None
+    except Exception as e:
+        _dl['error'] = str(e)
+        if tmp and os.path.exists(tmp):
+            try:
+                os.remove(tmp)
+            except OSError:
+                pass
+    finally:
+        _dl['running'] = False
+
 
 # Item map for enum stability (Blender requires stable pointers)
 _item_map = dict()
@@ -94,12 +160,12 @@ def sna_asset_enum_update(self, context):
         return
     # Derive object name from filename (strip extension)
     obj_name = os.path.splitext(os.path.basename(selected_path))[0]
-    blend_path = os.path.join(_ASSETS, 'asset_1.blend')
-    if not os.path.exists(blend_path):
+    blend_path = _asset_path('asset_1.blend')
+    if not blend_path:
         return
     before = set(bpy.data.objects)
     bpy.ops.wm.append(
-        directory=blend_path + r'\Object',
+        directory=os.path.join(blend_path, 'Object'),
         filename=obj_name,
         link=False,
     )
@@ -384,12 +450,81 @@ class FALLINGLEAVES_OT_ImportAsset(bpy.types.Operator):
     bl_options    = {'REGISTER', 'UNDO'}
 
     def execute(self, context):
-        blend_path = os.path.join(_ASSETS, 'asset_1.blend')
-        if not os.path.exists(blend_path):
-            self.report({'ERROR'}, "Asset file not found.")
+        blend_path = _asset_path('asset_1.blend')
+        if not blend_path:
+            self.report({'ERROR'}, "Asset pack missing: download it in the addon preferences.")
             return {'CANCELLED'}
         bpy.ops.wm.append('INVOKE_DEFAULT', filepath=blend_path)
         return {'FINISHED'}
+
+
+class FALLINGLEAVES_OT_DownloadAssets(bpy.types.Operator):
+    bl_idname      = 'fallingleaves.download_assets'
+    bl_label       = 'Download Asset Pack'
+    bl_description = 'Download the leaf assets (about 127 MB) from Hugging Face'
+
+    _timer = None
+
+    def execute(self, context):
+        if _dl['running']:
+            return {'CANCELLED'}
+        if not bpy.app.online_access:
+            self.report({'ERROR'}, "Enable 'Allow Online Access' in Preferences > System > Network")
+            return {'CANCELLED'}
+        dest = _user_assets_dir(create=True)
+        if not dest:
+            self.report({'ERROR'}, 'Could not find the extension user folder.')
+            return {'CANCELLED'}
+        _dl.update(running=True, error=None, current='', done=0, total=0)
+        threading.Thread(target=_download_worker, args=(dest,), daemon=True).start()
+        wm = context.window_manager
+        self._timer = wm.event_timer_add(0.5, window=context.window)
+        wm.modal_handler_add(self)
+        return {'RUNNING_MODAL'}
+
+    def modal(self, context, event):
+        if event.type != 'TIMER':
+            return {'PASS_THROUGH'}
+        for win in context.window_manager.windows:
+            for area in win.screen.areas:
+                area.tag_redraw()
+        if _dl['running']:
+            return {'PASS_THROUGH'}
+        context.window_manager.event_timer_remove(self._timer)
+        if _dl['error']:
+            self.report({'ERROR'}, f"Download failed: {_dl['error']}")
+            return {'CANCELLED'}
+        self.report({'INFO'}, 'Asset pack downloaded.')
+        return {'FINISHED'}
+
+
+class FALLINGLEAVES_Preferences(bpy.types.AddonPreferences):
+    bl_idname = __package__
+
+    def draw(self, context):
+        layout = self.layout
+        box = layout.box()
+        blend = _asset_path('asset_1.blend')
+        if blend:
+            box.label(text='Asset pack installed', icon='CHECKMARK')
+            box.label(text=blend)
+        else:
+            box.label(text='Asset pack not installed', icon='ERROR')
+        if _dl['running']:
+            mb = _dl['done'] / 1048576
+            total = _dl['total'] / 1048576
+            txt = f"Downloading {_dl['current']}: {mb:.0f} / {total:.0f} MB"
+            box.label(text=txt, icon='SORTTIME')
+        else:
+            if _dl['error']:
+                box.label(text=f"Error: {_dl['error']}", icon='CANCEL')
+            box.operator('fallingleaves.download_assets',
+                         text='Re-download Asset Pack' if blend else 'Download Asset Pack',
+                         icon='IMPORT')
+        d = _user_assets_dir()
+        if d and os.path.isdir(d):
+            op = box.operator('wm.path_open', text='Open assets folder', icon='FILE_FOLDER')
+            op.filepath = d
 
 
 class FALLINGLEAVES_OT_AddWind(bpy.types.Operator):
@@ -433,6 +568,47 @@ class FALLINGLEAVES_OT_AddWind(bpy.types.Operator):
             cfg.angular_velocity_factor = 2.299999952316284
 
         self.report({'INFO'}, 'Wind preset applied')
+        return {'FINISHED'}
+
+
+# Slider ranges for the wind sliders (values outside can still be typed in)
+_WIND_STRENGTH_MAX = 5.0
+_WIND_NOISE_MAX    = 2.0
+
+
+def _wind_field_get(attr):
+    def getter(self):
+        wind = bpy.data.objects.get('Wind_FallingLeaves')
+        return getattr(wind.field, attr) if wind and wind.field else 0.0
+    return getter
+
+
+def _wind_field_set(attr):
+    def setter(self, value):
+        wind = bpy.data.objects.get('Wind_FallingLeaves')
+        if wind and wind.field:
+            setattr(wind.field, attr, value)
+    return setter
+
+
+def _wind_objects():
+    return [o for o in bpy.data.objects if o.name.startswith('Wind_FallingLeaves')]
+
+
+class FALLINGLEAVES_OT_DeleteWind(bpy.types.Operator):
+    bl_idname      = 'fallingleaves.delete_wind'
+    bl_label       = 'Delete Wind'
+    bl_description = 'Remove the Wind force field added by Falling Leaves'
+    bl_options     = {'REGISTER', 'UNDO'}
+
+    @classmethod
+    def poll(cls, context):
+        return bool(_wind_objects())
+
+    def execute(self, context):
+        for obj in _wind_objects():
+            bpy.data.objects.remove(obj, do_unlink=True)
+        self.report({'INFO'}, 'Wind removed')
         return {'FINISHED'}
 
 
@@ -694,6 +870,10 @@ class FALLINGLEAVES_PT_AssetPanel(bpy.types.Panel):
 
     def draw(self, context):
         layout = self.layout
+        if not _asset_path('asset_1.blend'):
+            layout.label(text='Asset pack not installed', icon='ERROR')
+            layout.operator('fallingleaves.download_assets', icon='IMPORT')
+            return
         # Bouton Import Asset (ouvre le browser .blend)
         layout.operator('fallingleaves.import_asset',
                         text='Import Asset',
@@ -803,15 +983,17 @@ class FALLINGLEAVES_PT_Wind(bpy.types.Panel):
 
     def draw(self, context):
         layout = self.layout
-        layout.operator('fallingleaves.add_wind', icon='FORCE_WIND')
+        row = layout.row(align=True)
+        row.operator('fallingleaves.add_wind', icon='FORCE_WIND')
+        row.operator('fallingleaves.delete_wind', text='', icon='TRASH')
 
         wind = bpy.data.objects.get('Wind_FallingLeaves')
         if wind and wind.field:
             box = layout.box()
             box.label(text="Wind Settings:", icon='FORCE_WIND')
             col = box.column(align=True)
-            col.prop(wind.field, 'strength', text="Strength", slider=True)
-            col.prop(wind.field, 'noise',    text="Noise",    slider=True)
+            col.prop(context.scene, 'fl_wind_strength', text="Strength", slider=True)
+            col.prop(context.scene, 'fl_wind_noise',    text="Noise",    slider=True)
 
         layout.separator()
         layout.operator('fallingleaves.bake', icon='RENDER_ANIMATION')
@@ -827,7 +1009,10 @@ classes = (
     FALLINGLEAVES_OT_ImportLeafMesh,
     FALLINGLEAVES_OT_ReplaceLeafMesh,
     FALLINGLEAVES_OT_ImportAsset,
+    FALLINGLEAVES_OT_DownloadAssets,
+    FALLINGLEAVES_Preferences,
     FALLINGLEAVES_OT_AddWind,
+    FALLINGLEAVES_OT_DeleteWind,
     FALLINGLEAVES_OT_BakeAnimation,
     FALLINGLEAVES_OT_ExportSettings,
     FALLINGLEAVES_OT_ApplySettings,
@@ -852,6 +1037,17 @@ def register():
         update=sna_asset_enum_update,
     )
 
+    bpy.types.Scene.fl_wind_strength = FloatProperty(
+        name='Strength', description='Wind strength',
+        min=-1000.0, max=1000.0, soft_min=0.0, soft_max=_WIND_STRENGTH_MAX,
+        step=5, precision=2,
+        get=_wind_field_get('strength'), set=_wind_field_set('strength'))
+    bpy.types.Scene.fl_wind_noise = FloatProperty(
+        name='Noise', description='Wind noise amount',
+        min=0.0, max=1000.0, soft_min=0.0, soft_max=_WIND_NOISE_MAX,
+        step=5, precision=2,
+        get=_wind_field_get('noise'), set=_wind_field_set('noise'))
+
     for cls in classes:
         bpy.utils.register_class(cls)
 
@@ -867,3 +1063,6 @@ def unregister():
 
     if hasattr(bpy.types.Scene, 'sna_asset_selection'):
         del bpy.types.Scene.sna_asset_selection
+    for name in ('fl_wind_strength', 'fl_wind_noise'):
+        if hasattr(bpy.types.Scene, name):
+            delattr(bpy.types.Scene, name)
