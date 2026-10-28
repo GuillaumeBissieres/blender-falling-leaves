@@ -123,6 +123,9 @@ Fine-tune the particle system without leaving the N panel:
 
 <img width="346" height="153" alt="Capture d&#39;écran 2026-10-28 224025" src="https://github.com/user-attachments/assets/37d0811f-6dd6-4390-b712-a349cf6bdc0b" />
 
+<img width="1894" height="998" alt="falling_leaves_5" src="https://github.com/user-attachments/assets/d0ee873d-c904-42bc-9c69-51e02caede3e" />
+
+
 ###
 
 <!-- Screenshot: Wind & Forces panel -->
