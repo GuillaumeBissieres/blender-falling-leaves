@@ -123,6 +123,9 @@ Fine-tune the particle system without leaving the N panel:
 
 ###
 
+<img width="442" height="477" alt="Capture d&#39;écran 2026-10-28 234453" src="https://github.com/user-attachments/assets/db97228c-8d68-4495-90d3-ad0515c3aeb7" />
+
+
 <!-- Screenshot: Simulation Settings panel -->
 
 ###
