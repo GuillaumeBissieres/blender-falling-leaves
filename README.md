@@ -11,6 +11,11 @@ An add-on to create and animate realistic falling leaves in Blender
 
 This add-on builds a complete falling-leaves scene in one click: an emitter, a leaf mesh, a ground with collision and a fully configured particle system. You can then tune the simulation, swap in your own leaf, add wind and bake the result — all from within Blender's N panel.
 
+###
+
+<img width="1641" height="989" alt="Animation_6 (1)" src="https://github.com/user-attachments/assets/b897ac34-bc40-4709-8971-927c0f902ebc" />
+
+###
 
 # Requirements
 
@@ -101,7 +106,6 @@ If the pack is not installed yet, the panel shows a **Download Asset Pack** butt
 ###
 
 <img width="1894" height="998" alt="falling_leaves_10 (2)" src="https://github.com/user-attachments/assets/e15339c4-2b88-4fbe-b8ae-8b8d0e66b364" />
-
 
 ###
 
