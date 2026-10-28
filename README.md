@@ -121,6 +121,8 @@ Fine-tune the particle system without leaving the N panel:
 3. **Delete Wind** : The trash icon next to Add Wind removes the wind field in one click.
 4. **Bake Simulation** : Bakes the particle simulation for reliable playback and rendering.
 
+<img width="346" height="153" alt="Capture d&#39;écran 2026-10-28 224025" src="https://github.com/user-attachments/assets/37d0811f-6dd6-4390-b712-a349cf6bdc0b" />
+
 ###
 
 <!-- Screenshot: Wind & Forces panel -->
