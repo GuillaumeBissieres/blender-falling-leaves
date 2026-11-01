@@ -155,6 +155,36 @@ Fine-tune the particle system without leaving the N panel:
 
 ###
 
+# How to Use — Leaf Path
+
+1. **Add Leaf Path** : Pick a curve of your scene in the **Leaf Path** panel. It becomes the path the leaves follow, like a stream of leaves carried by the wind. The trash icon removes it in one click.
+2. **Speed / Noise / Spin** : Control how fast the leaves travel along the curve, how wavy the flow is, and how fast they rotate on themselves.
+3. **Entry / Exit Diameter** : Set the width of the flow where the leaves enter and leave the path.
+4. **Disappear at Beginning / End of Path** : Choose whether the leaves are born exactly on the path (none visible before it starts) and whether they vanish when they reach the end of the curve.
+
+###
+
+<img width="1894" height="998" alt="falling_leaves_16" src="https://github.com/user-attachments/assets/59523fec-d0b4-4b83-a69f-735827947c64" />
+
+###
+<!-- Screenshot: Leaf Path panel -->
+
+###
+
+
+# How to Use — Ground Wind
+
+Blow the leaves lying on your Geometry Nodes ground, like a gust sweeping them away. It runs in real time: just play the timeline.
+
+1. **Add Ground Wind** : In **Wind & Forces** > **Ground Wind**, pick your **Ground** object and click the button. A **GroundWind** empty is created with a default sweep across the ground. Move or keyframe it to steer the gust.
+2. **Wind Strength / Wind Radius** : How hard the leaves are swept and the size of the zone affected around the wind.
+3. **Spread / Turbulence / Orientation** : How much the leaves are pushed apart from the center, how random the motion is, and how much the wind tilts and flips them.
+4. **Gravity / Friction** : How fast lifted leaves fall back, and how quickly they stop on the ground.
+5. **Leaves Left Behind** : The proportion of leaves that stay in place after the wind passes.
+6. **Rebuild / Hide / Delete** : Regenerate the effect, show or hide the wind helpers, or remove everything and restore your original ground in one click.
+
+<!-- Screenshot: Ground Wind panel -->
+
 
 # Advanced Options
 
