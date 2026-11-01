@@ -1,6 +1,6 @@
 schema_version = "1.0.0"
 id = "falling_leaves"
-version = "1.5.0"
+version = "1.8.0"
 name = "Falling Leaves"
 tagline = "Create and animate realistic falling leaves with one click"
 maintainer = "Guillaume Bissieres"
@@ -14,10 +14,6 @@ license = [
 ]
 
 [permissions]
-network = "Download asset pack from Hugging Face"
-
-[build]
-paths_exclude_pattern = [
-  "/assets/asset_1.blend",
-  "/assets/feuille*.png",
-]
+network = "Download optional extra assets from Hugging Face"
+files = "Save your own assets and thumbnails, import leaf images"
+clipboard = "Export and import simulation settings"
