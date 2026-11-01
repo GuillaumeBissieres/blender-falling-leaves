@@ -183,6 +183,16 @@ Blow the leaves lying on your Geometry Nodes ground, like a gust sweeping them a
 5. **Leaves Left Behind** : The proportion of leaves that stay in place after the wind passes.
 6. **Rebuild / Hide / Delete** : Regenerate the effect, show or hide the wind helpers, or remove everything and restore your original ground in one click.
 
+###
+
+<img width="1894" height="982" alt="falling_leaves_21 (2)" src="https://github.com/user-attachments/assets/02381276-440e-4acf-ba5d-f3b8c8c31042" />
+
+###
+
+<img width="1894" height="982" alt="falling_leaves_20 (2)" src="https://github.com/user-attachments/assets/df8a86e7-5c9f-4057-baac-219c59638c8e" />
+
+
+###
 <!-- Screenshot: Ground Wind panel -->
 
 
